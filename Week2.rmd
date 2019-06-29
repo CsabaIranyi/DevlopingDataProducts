@@ -1,0 +1,129 @@
+---
+title: "R Markdown and Leaflet: Course Project"
+author: "Csaba Iranyi"
+date: "06.28.2019"
+output: 
+  html_document:
+    theme: yeti
+    highlight: tango
+    df_print: kable
+    code_folding: hide
+---
+
+## The best indian restaurants in Budapest {.tabset .tabset-fade}
+
+Budapest's Indian restaurants aren't about to set the food world on fire, but this shouldn't surprise you: the city has a small Indian expat community, and few locals seek out Indian food (though tourism from India is rising). 
+  
+The below restaurants serve the usual suspects of northern Indian fare, including reliably prepared tandoori chicken, korma dishes, butter chicken, biryani, saag paneer, and dal makhani.
+
+### List of restaurants
+
+```{r restaurant}
+
+# Restarurants data
+restaurants <- data.frame(
+  "Name" = c("<font size=\"+1\">Indigo Indian Restaurant</font>",
+             "<font size=\"+1\">Rajkot Palace</font>",
+             "<font size=\"+1\">Curry House</font>",
+             "<font size=\"+1\">Taj Mahal</font>",
+             "<font size=\"+1\">Royal Rasoi</font>",
+             "<font size=\"+1\">Salaam Bombay</font>",
+             "<font size=\"+1\">Bangla Bufe Premium</font>",
+             "<font size=\"+1\">MahaRana Indian Ayurvedic Restaurant</font>",
+             "<font size=\"+1\">Haveli Indian Restaurant</font>",
+             "<font size=\"+1\">Govinda Restaurant</font>",
+             "<font size=\"+1\">Pandzsab Tandoori Restaurant</font>",
+             "<font size=\"+1\">Swaad Restaurant</font>",
+             "<font size=\"+1\">Shalimar</font>"),
+  "Address" = c("<a href=\"https://www.google.com/maps/search/?api=1&query=Indigo+Indian+Restaurant+Budapest\">Budapest, Jókai u. 13, 1066</a>",
+                "<a href=\"https://www.google.com/maps/search/?api=1&query=Rajkot+Palace+Budapest\">Budapest, Nyáry Pál u. 9, 1056</a>",
+                "<a href=\"https://www.google.com/maps/search/?api=1&query=Curry+House+Budapest\">Budapest, Bródy Sándor u. 21, 1088</a>",
+                "<a href=\"https://www.google.com/maps/search/?api=1&query=Taj+Mahal+Budapest\">Budapest, Szondi u. 40, 1067</a>",
+                "<a href=\"https://www.google.com/maps/search/?api=1&query=Royal+Rasoi+Budapest\">Budapest, Ráday u. 5, 1092</a>",
+                "<a href=\"https://www.google.com/maps/search/?api=1&query=Salaam+Bombay+Budapest\">Budapest, Mérleg u. 6, 1051</a>",
+                "<a href=\"https://www.google.com/maps/search/?api=1&query=Bangla+Bufe+Premium+Budapest\">Budapest, Akácfa u. 40, 1072</a>",
+                "<a href=\"https://www.google.com/maps/search/?api=1&query=MahaRana+Restaurant+Budapest\">Budapest, Hegedűs Gyula u. 7, 1136</a>",
+                "<a href=\"https://www.google.com/maps/search/?api=1&query=Haveli+Indian+Restaurant+Budapest\">Budapest, Szinyei Merse u. 1, 1063</a>",
+                "<a href=\"https://www.google.com/maps/search/?api=1&query=Govinda+Restaurant+Budapest+Vigyazo+Ferenc\">Budapest, Vigyázó Ferenc u. 4, 1051</a>",
+                "<a href=\"https://www.google.com/maps/search/?api=1&query=Pandzsab+Restaurant+Budapest\">Budapest, Pannónia u. 3, 1133</a>",
+                "<a href=\"https://www.google.com/maps/search/?api=1&query=Swaad+Restaurant+Budapest\">Budapest, Gömb u. 5, 1139</a>",
+                "<a href=\"https://www.google.com/maps/search/?api=1&query=Shalimar+Restaurant+Budapest\">Budapest, Dob u. 53, 1072</a>"),
+  "Website" = c("<a href=\"http://indigo-restaurant.hu\">indigo-restaurant.hu</a>",
+                "<a href=\"http://rajkotpalace.com\">rajkotpalace.com</a>",
+                "<a href=\"http://curry-house.hu\">curry-house.hu</a>",
+                "<a href=\"http://tajmahal.hu\">tajmahal.hu</a>",
+                "<a href=\"http://royalrasoi.hu\">royalrasoi.hu</a>",
+                "<i>No website</i>",
+                "<i>No website</i>",
+                "<a href=\"http://maharana.hu\">maharana.hu</a>",
+                "<a href=\"http://haveli.hu\">haveli.hu</a>",
+                "<a href=\"http://govindabudapest.business.site\">govindabudapest.business.site</a>",
+                "<a href=\"http://indiaietterem.hupont.hu\">indiaietterem.hupont.hu</a>",
+                "<a href=\"http://swaad.hu\">swaad.hu</a>",
+                "<a href=\"http://shalimar.hu\">shalimar.hu</a>"),
+  "Rating" = c("#121",
+               "#148",
+               "#208",
+               "#211",
+               "#275",
+               "#308",
+               "#337",
+               "#501",
+               "#516",
+               "#528",
+               "#643",
+               "#744",
+               "#751"),
+  "latitude" = c(47.507122,
+                 47.490554,
+                 47.492852,
+                 47.510788,
+                 47.487906,
+                 47.499555,
+                 47.500082,
+                 47.512656,
+                 47.510286,
+                 47.501137,
+                 47.513246,
+                 47.532872,
+                 47.501023),
+  "longitude" = c(19.059445,
+                  19.055953,
+                  19.067327,
+                  19.064574,
+                  19.062680,
+                  19.048725,
+                  19.065572,
+                  19.052942,
+                  19.069438,
+                  19.048051,
+                  19.051597,
+                  19.071995,
+                  19.065126))
+
+restaurants[, 1:4]
+```
+
+### Locations on Map
+
+```{r echo = FALSE}
+library(leaflet)
+```
+
+```{r message = FALSE, out.width = "100%", fig.height = 10}
+
+# Icons
+icons <- awesomeIcons(
+  icon = "fa-cutlery",
+  iconColor = "#eeeeee",
+  library = "fa",
+  markerColor = "purple"
+)
+
+# Map
+restaurants[, 5:6] %>% 
+leaflet() %>% 
+addProviderTiles("OpenStreetMap.Mapnik",) %>%
+setView(lat = 47.501717, lng = 19.058479, zoom = 14) %>%
+addAwesomeMarkers(popup = paste(restaurants$Name, restaurants$Website, sep = "<br/>"), icon = icons, labelOptions = c(opacity = 0.5, interactive = TRUE ))
+```

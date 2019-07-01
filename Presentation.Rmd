@@ -1,0 +1,58 @@
+---
+title: "Presentation using Shiny"
+author: "Csaba Iranyi"
+date: "July 1, 2019"
+output: ioslides_presentation
+---
+
+## Pixels Per Inch (PPI) Calculator
+
+The PPI Calculator finds pixels per inch (PPI).
+
+### What is PPI
+
+PPI is a measure of pixel density or resolution of a computer screen, television screen or other display device.  
+  
+Pixels per inch indicates how many pixels are in a 1 inch line on a display.  
+  
+The PPI will be the same whether it's a horizontal or vertical or diagonal inch because pixels are square and therefore symmetric.
+
+## Calculator Usage
+
+Enter the width of screen in pixels.  
+  
+Enter the height of screen in pixels.  
+  
+Choose the diagonal (in inches) with the slider.
+  
+The app calculates the PPI value immediately. 
+
+## Sample
+
+Width of the screen in pixels:
+```{r echo = TRUE}
+screen.width = 1920
+```
+
+Height of the screen in pixels:
+```{r echo = TRUE}
+screen.height = 1080
+```
+
+Diagonal of the screen in inches:
+```{r echo = TRUE}
+screen.diagonal = 10.5
+```
+
+Calculate the PPI value:
+```{r echo = TRUE, comment = ""}
+round(sqrt(screen.width^2 + screen.height^2) / screen.diagonal)
+```
+
+## Links
+
+### The calculator app is available at: 
+- https://iranyics.shinyapps.io/PPI_calculator/
+
+### Further readings:
+- https://en.wikipedia.org/wiki/Pixel_density
